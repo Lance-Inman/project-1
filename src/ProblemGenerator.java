@@ -1,8 +1,8 @@
 package src;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 /************************************************************
  * For this project, you need to write a “problem generator”
@@ -34,6 +34,7 @@ public class ProblemGenerator {
         private class Vertex {
             int x;
             int y;
+            int color;
             Vertex closestNeighbor;
             boolean connectedToClosestNeighbor;
             ArrayList<Vertex> neighbors;
@@ -123,26 +124,28 @@ public class ProblemGenerator {
          * intersect an existing connection in g, false otherwise.
          */
         public boolean intersects(Vertex v1, Vertex v2) {
-        /* REMOVE FOLLOWING LINE AFTER EDITTING THIS FUNCTION */
+            for(int i = 0; i < vertices.size(); i++) {
+                if(v1 != vertices.get(i) && v2 != vertices.get(i)) {
+                    Vertex v3 = vertices.get(i);
+                    for(int j = 0; j < v3.neighbors.size(); j++) {
+                        if(Line2D.linesIntersect(
+                                v1.x, v1.y,
+                                v2.x, v2.y,
+                                v3.x, v3.y,
+                                v3.neighbors.get(i).x, v3.neighbors.get(i).y)) {
+                            return true;
+                        }
+                    }
+                } else {
+                    // Skip this vertex
+                }
+            }
+
             return false;
         }
     }
 
-    public void main (String[]args) {
-        Scanner keyboard = new Scanner(System.in);
-        String input = "h";
-        System.out.println("Welcome");
-
-        while(input.equalsIgnoreCase("q")) {
-            if(input.equalsIgnoreCase("h")) {
-                System.out.println("Type g X to generate a graph of size X. Type q to quit.");
-            } else if (input.equalsIgnoreCase("g")){
-                input = keyboard.next();
-                Graph g = new Graph(Integer.parseInt(input));
-            }
-            input = keyboard.next();
-        }
-
-        System.exit(0);
+    public Graph generateGraph(int n) {
+        return new Graph(n);
     }
 }

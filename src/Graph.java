@@ -4,18 +4,18 @@ import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Random;
 
-/************************************************************
- * For this project, you need to write a “problem generator”
- * whereby you will create several graphs of varioussizes
- * to solve instances of the graph-coloring problem. For
- * your graph generator, scatter n points on the unit square
- * (where n will be provided as input), select some point X
- * at random and connectXby a straight lineto the nearest
- * point Y such thatXis not already connected to Y and line
- * crosses no other line. Repeat the previous step until no
- * more connections are possible. The points represent
- * regions on the map, and the lines connect neighbors.
- *************************************************************/
+// ***********************************************************
+// For this project, you need to write a “problem generator”
+// whereby you will create several graphs of various sizes
+// to solve instances of the graph-coloring problem. For
+// your graph generator, scatter n points on the unit square
+// (where n will be provided as input), select some point X
+// at random and connectXby a straight line to the nearest
+// point Y such thatXis not already connected to Y and line
+// crosses no other line. Repeat the previous step until no
+// more connections are possible. The points represent
+// regions on the map, and the lines connect neighbors.
+// ***********************************************************
 
 /**
  * The {@code Graph} class generates an uncolored graph
@@ -37,7 +37,7 @@ public class Graph {
         boolean connectedToClosestNeighbor;
         ArrayList<Vertex> neighbors;
 
-        public Vertex(int x, int y) {
+        private Vertex(int x, int y) {
             this.x = x;
             this.y = y;
             connectedToClosestNeighbor = false;
@@ -107,8 +107,7 @@ public class Graph {
     }
 
     private void connectClosestNeighbors() {
-        for(int i = 0; i < vertices.size(); i++) {
-            Vertex v = vertices.get(i);
+        for(Vertex v: vertices) {
             if(v.neighbors.contains(v.closestNeighbor)) {
                 v.connectedToClosestNeighbor = true;
             } else {
@@ -126,20 +125,17 @@ public class Graph {
      * intersect an existing connection in g, false otherwise.
      */
     private boolean intersects(Vertex v1, Vertex v2) {
-        for(int i = 0; i < vertices.size(); i++) {
-            if(v1 != vertices.get(i) && v2 != vertices.get(i)) {
-                Vertex v3 = vertices.get(i);
-                for(int j = 0; j < v3.neighbors.size(); j++) {
+        for(Vertex v3: vertices) {
+            if(v1 != v3 && v2 != v3) {
+                for(Vertex v4: v3.neighbors) {
                     if(Line2D.linesIntersect(
                             v1.x, v1.y,
                             v2.x, v2.y,
                             v3.x, v3.y,
-                            v3.neighbors.get(i).x, v3.neighbors.get(i).y)) {
+                            v4.x, v4.y)) {
                         return true;
                     }
                 }
-            } else {
-                // Skip this vertex
             }
         }
 

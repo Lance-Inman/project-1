@@ -1,4 +1,4 @@
-package src;
+package graphcoloring;
 
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -27,32 +27,25 @@ import java.util.Random;
  * @since 2016-09-05
  */
 public class Graph {
-    ArrayList<Vertex> vertices;
-
-    private class Vertex {
-        int x;
-        int y;
-        int color;
-        Vertex closestNeighbor;
-        boolean connectedToClosestNeighbor;
-        ArrayList<Vertex> neighbors;
-
-        private Vertex(int x, int y) {
-            this.x = x;
-            this.y = y;
-            connectedToClosestNeighbor = false;
-            neighbors = new ArrayList<>();
-        }
-    }
+    private ArrayList<Vertex> vertices;
 
     public Graph(int size) {
         populateGraph(size);
         populateNeighbors();
         connectClosestNeighbors();
     }
+    public Graph()
+    {
+        vertices = new ArrayList<Vertex>();
+    }
+    
+    public ArrayList<Vertex> getVertices()
+    {
+        return vertices;
+    }
 
     public void setColor(Vertex v, int n) {
-        v.color = n;
+        v.setColor(n);
     }
 
     private void populateGraph(int n) {
@@ -64,7 +57,7 @@ public class Graph {
     }
 
     private double distance(Vertex v1, Vertex v2) {
-        return Math.sqrt(Math.pow((v1.x - v2.x), 2) + Math.pow((v1.y - v2.y), 2));
+        return Math.sqrt(Math.pow((v1.getX() - v2.getX()), 2) + Math.pow((v1.getY() - v2.getY()), 2));
     }
 
     /** Finds the closest neighbor to each vertex in the graph.
@@ -85,20 +78,20 @@ public class Graph {
                 }
             }
 
-            v1.closestNeighbor = v1Neighbor;
+            v1.setClosestNeighbor(v1Neighbor);
         }
     }
 
     private boolean connect(Vertex v1, Vertex v2) {
         if(!intersects(v1, v2)) {
-            v1.neighbors.add(v2);
-            v2.neighbors.add(v1);
+            v1.getNeighbors().add(v2);
+            v2.getNeighbors().add(v1);
 
-            if (v2 == v1.closestNeighbor) {
-                v1.connectedToClosestNeighbor = true;
+            if (v2 == v1.getClosestNeighbor()) {
+                v1.setConnectedToClosestNeighbor(true);
             }
-            if (v1 == v2.closestNeighbor) {
-                v2.connectedToClosestNeighbor = true;
+            if (v1 == v2.getClosestNeighbor()) {
+                v2.setConnectedToClosestNeighbor(true);
             }
             return true;
         } else {
@@ -108,10 +101,10 @@ public class Graph {
 
     private void connectClosestNeighbors() {
         for(Vertex v: vertices) {
-            if(v.neighbors.contains(v.closestNeighbor)) {
-                v.connectedToClosestNeighbor = true;
+            if(v.getNeighbors().contains(v.getClosestNeighbor())) {
+                v.setConnectedToClosestNeighbor(true);
             } else {
-                connect(v, v.closestNeighbor);
+                connect(v, v.getClosestNeighbor());
             }
         }
     }
@@ -127,12 +120,12 @@ public class Graph {
     private boolean intersects(Vertex v1, Vertex v2) {
         for(Vertex v3: vertices) {
             if(v1 != v3 && v2 != v3) {
-                for(Vertex v4: v3.neighbors) {
+                for(Vertex v4: v3.getNeighbors()) {
                     if(Line2D.linesIntersect(
-                            v1.x, v1.y,
-                            v2.x, v2.y,
-                            v3.x, v3.y,
-                            v4.x, v4.y)) {
+                            v1.getX(), v1.getY(),
+                            v2.getX(), v2.getY(),
+                            v3.getX(), v3.getY(),
+                            v4.getX(), v4.getY())) {
                         return true;
                     }
                 }
@@ -142,3 +135,4 @@ public class Graph {
         return false;
     }
 }
+

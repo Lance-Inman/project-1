@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * @author Ethan Peterson
  * @since Sep 19, 2016
  */
-public class SimpleBacktrack implements IKColorings
+public class SimpleBacktrack implements Solver
 {
     private int numDecisions;
     private int[] domainValues;
@@ -18,7 +18,7 @@ public class SimpleBacktrack implements IKColorings
     }
     
     @Override
-    public Graph color(Graph g, int kColors)
+    public Graph solve(Graph g, int kColors)
     {
         orderDomainValues(kColors); //sets the order in which the colors should be tried
         curVertex = 0;

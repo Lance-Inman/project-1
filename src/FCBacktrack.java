@@ -7,14 +7,14 @@ import java.util.Arrays;
  * @author Ethan Peterson
  * @since Sep 20, 2016
  */
-public class FCBacktrack implements IKColorings
+public class FCBacktrack implements Solver
 {
     private int numDecisions;
     private int[] domainValues;
     private int curVertex;
     
     @Override
-    public Graph color(Graph g, int kColors)
+    public Graph solve(Graph g, int kColors)
     {
         orderDomainValues(kColors); //sets the order in which the colors should be tried
         populateVertexDomainPossiblilities(g.getVertices());

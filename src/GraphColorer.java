@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class GraphColorer {
 
-    public static void printGraph(Graph g) {
+    private static void printGraph(Graph g) {
         for(Vertex v: g.vertices) {
             System.out.println("("+v.getX()+","+v.getY()+"):"+v.getColor());
             for(Vertex n: v.getNeighbors()) {
@@ -16,11 +16,11 @@ public class GraphColorer {
 
     public static void main(String[] args) {
         Graph g = new Graph(10);
-        int numColors = 3;
+        int numColors = 4;
         Scanner keyboard = new Scanner(System.in);
         String input = "h";
 
-        while (input != "q") {
+        while (!input.equals("q")) {
             input = keyboard.next();
             switch (input) {
                 case "h":
@@ -54,11 +54,11 @@ public class GraphColorer {
                     switch(input) {
                         case "m":
                             try {
-                                MinConflictsSolver mcs = new MinConflictsSolver();
+                                MinConflictsSolver mcs = new MinConflictsSolver(100000000);
                                 g = mcs.solve(g, numColors);
                                 System.out.println("Solved graph with Min-Conflicts in "+mcs.getNumDecisions()+" decisions");
                             } catch (UnsolvableGraphException uge) {
-                                System.out.println("Can not solve graph with Min-Conflicts");
+                                System.out.println("Can not solve graph with Min-Conflicts in less than 100,000,000 decisions");
                             }
                             break;
                         case "s":
@@ -86,6 +86,15 @@ public class GraphColorer {
                             if (g == null) {
                                 System.out.println("Can not solve graph with MAC Backtrack");
                                 g = new Graph(10);
+                            }
+                            break;
+                        case "g":
+                            GeneticSolver gs = new GeneticSolver(100000000);
+                            try {
+                                g = gs.solve(g, numColors);
+                                System.out.println("Solved graph with a Genetic Algorithm in " + gs.getNumDecisions() + " decitions");
+                            } catch (UnsolvableGraphException uge) {
+                                System.out.println("Can not solve graph with Genetic Algorithm in less than 100,000,000 decisions");
                             }
                             break;
                     }

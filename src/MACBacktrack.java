@@ -31,8 +31,9 @@ public class MACBacktrack implements Solver
         Vertex currentVertex = g.getVertices().get(curVertex); //since this is simple backtracking, progression is done simply by iterating through the Graph's list of vertices
         
         //test each possible color at the vertex (which list comes from each Vertex's possible color list, the one that is trimmed by forward checking)
-        for(Integer color : currentVertex.getPossibleColor())
+        for(int i = 0; i < currentVertex.getPossibleColor().size(); i++)
         {
+            int color = currentVertex.getPossibleColor().get(i);
             //check if the color is valid in this spot
             if(checkColorOnNeighbors(color, currentVertex.getNeighbors()))
             {

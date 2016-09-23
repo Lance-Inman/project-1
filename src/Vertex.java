@@ -1,75 +1,69 @@
-package graphcoloring;
+package src;
 
 import java.util.ArrayList;
 
-/*
- * @author Ethan Peterson
- * @since Sep 19, 2016
- */
-public class Vertex 
-{
+public class Vertex {
     private int x;
     private int y;
     private int color;
+    private int conflicts;
     private ArrayList<Integer> possibleColor;
-    private Vertex closestNeighbor;
-    private boolean connectedToClosestNeighbor;
-    private ArrayList<Vertex> neighbors;
+    ArrayList<Vertex> neighbors;
 
     public Vertex(int x, int y) {
         this.x = x;
         this.y = y;
-        connectedToClosestNeighbor = false;
-        neighbors = new ArrayList<>();
         color = -1;
+        conflicts = 0;
+        neighbors = new ArrayList<>();
         possibleColor = new ArrayList<>();
+    }
+
+    private void updateConflicts() {
+        int updatedConflicts = 0;
+        for(Vertex v: neighbors) {
+            if(v.getColor() == color) {
+                updatedConflicts++;
+            }
+        }
+        conflicts = updatedConflicts;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public int getColor() {
         return color;
     }
-    
-    public ArrayList<Integer> getPossibleColor()
-    {
+
+    public int getConflicts() {
+        return conflicts;
+    }
+
+    public ArrayList<Integer> getPossibleColor() {
         return possibleColor;
     }
-    
-    public void setColor(int newColor) {
-        color = newColor;
-    }
-    
-    public int getX()
-    {
-        return x;
-    }
-    
-    public int getY()
-    {
-        return y;
-    }
-    
-    public boolean getConnectedToClosestNeighbor()
-    {
-        return connectedToClosestNeighbor;
-    }
-    
-    public void setConnectedToClosestNeighbor(boolean b)
-    {
-        connectedToClosestNeighbor = b;
-    }
-    
-    public Vertex getClosestNeighbor()
-    {
-        return closestNeighbor;
-    }
-    
-    public void setClosestNeighbor(Vertex v)
-    {
-        closestNeighbor = v;
-    }
-    
-    public ArrayList<Vertex> getNeighbors()
-    {
+
+    public ArrayList<Vertex> getNeighbors() {
         return neighbors;
     }
+
+    public void setColor(int newColor) {
+        color = newColor;
+        updateConflicts();
+    }
+
+    public void addNeighbor(Vertex v) {
+        neighbors.add(v);
+    }
+
+    public String toString() {
+        return "("+x+","+y+")";
+    }
+
 }

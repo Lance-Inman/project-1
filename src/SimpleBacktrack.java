@@ -1,4 +1,4 @@
-package graphcoloring;
+package src;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,6 @@ public class SimpleBacktrack implements Solver
         numDecisions = 0;
     }
     
-    @Override
     public Graph solve(Graph g, int kColors)
     {
         orderDomainValues(kColors); //sets the order in which the colors should be tried
@@ -83,7 +82,6 @@ public class SimpleBacktrack implements Solver
         domainValues = domain;
     }
     
-    @Override
     public boolean isColored(Graph g)
     {
         for(Vertex v : g.getVertices())
@@ -95,7 +93,6 @@ public class SimpleBacktrack implements Solver
         return true;
     }
     
-    @Override
     public int getNumDecisions()
     {
         return numDecisions;

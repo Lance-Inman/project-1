@@ -1,4 +1,4 @@
-package graphcoloring;
+package src;
 
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import java.util.Random;
 // to solve instances of the graph-coloring problem. For
 // your graph generator, scatter n points on the unit square
 // (where n will be provided as input), select some point X
-// at random and connectXby a straight line to the nearest
-// point Y such thatXis not already connected to Y and line
+// at random and connect X by a straight line to the nearest
+// point Y such that X is not already connected to Y and line
 // crosses no other line. Repeat the previous step until no
 // more connections are possible. The points represent
 // regions on the map, and the lines connect neighbors.
@@ -27,31 +27,19 @@ import java.util.Random;
  * @since 2016-09-05
  */
 public class Graph {
-    private ArrayList<Vertex> vertices;
+    ArrayList<Vertex> vertices;
+    final int unitSize = 100;
 
     public Graph(int size) {
+        vertices = new ArrayList<>();
         populateGraph(size);
-        populateNeighbors();
-        connectClosestNeighbors();
-    }
-    public Graph()
-    {
-        vertices = new ArrayList<Vertex>();
-    }
-    
-    public ArrayList<Vertex> getVertices()
-    {
-        return vertices;
-    }
-
-    public void setColor(Vertex v, int n) {
-        v.setColor(n);
+        connectGraph();
     }
 
     private void populateGraph(int n) {
         Random rnd = new Random();
         for(int i = 0; i < n; i++) {
-            Vertex v = new Vertex(rnd.nextInt(n), rnd.nextInt(n));
+            Vertex v = new Vertex(rnd.nextInt(unitSize), rnd.nextInt(unitSize));
             vertices.add(v);
         }
     }
@@ -60,52 +48,57 @@ public class Graph {
         return Math.sqrt(Math.pow((v1.getX() - v2.getX()), 2) + Math.pow((v1.getY() - v2.getY()), 2));
     }
 
-    /** Finds the closest neighbor to each vertex in the graph.
-     */
-    private void populateNeighbors() {
-        for(int i = 0; i < vertices.size(); i++) {
-            Vertex v1 = vertices.get(i);
-            Vertex v1Neighbor = null;
-            double shortestDist = -1;
-
-            for(int j = 0; j < vertices.size(); j++) {
-                if(j != i) {
-                    Vertex v2 = vertices.get(j);
-                    if(distance(v1, v2) < shortestDist || shortestDist == -1) {
-                        v1Neighbor = v2;
-                        shortestDist = distance(v1, v2);
-                    }
-                }
-            }
-
-            v1.setClosestNeighbor(v1Neighbor);
-        }
-    }
-
     private boolean connect(Vertex v1, Vertex v2) {
-        if(!intersects(v1, v2)) {
-            v1.getNeighbors().add(v2);
-            v2.getNeighbors().add(v1);
-
-            if (v2 == v1.getClosestNeighbor()) {
-                v1.setConnectedToClosestNeighbor(true);
-            }
-            if (v1 == v2.getClosestNeighbor()) {
-                v2.setConnectedToClosestNeighbor(true);
-            }
+        if((v1 != v2) && (!intersects(v1, v2))) {
+            v1.neighbors.add(v2);
+            v2.neighbors.add(v1);
             return true;
         } else {
             return false;
         }
     }
 
-    private void connectClosestNeighbors() {
-        for(Vertex v: vertices) {
-            if(v.getNeighbors().contains(v.getClosestNeighbor())) {
-                v.setConnectedToClosestNeighbor(true);
-            } else {
-                connect(v, v.getClosestNeighbor());
+    public ArrayList<Vertex> getVertices() {
+        return vertices;
+    }
+
+    private void connectGraph() {
+        Random rnd = new Random();
+        ArrayList<Vertex> unconnected = (ArrayList<Vertex>) vertices.clone();
+        Vertex v1 = unconnected.get(0);
+        Vertex v2;
+        double minDistance = 0;
+        boolean done = false;
+
+        while(unconnected.size() > 1) {
+            try {
+                v1 = unconnected.get(rnd.nextInt(unconnected.size()));
+                v2 = closestVertex(v1, minDistance);
+                connect(v1, v2);
+                minDistance = distance(v1, v2);
+            } catch (NullPointerException npe) {
+                unconnected.remove(v1);
+                minDistance = 0;
             }
+        }
+    }
+
+    private Vertex closestVertex(Vertex v1, double minDistance) throws NullPointerException {
+        double shortestDistance = vertices.size() * vertices.size();
+        double distance;
+        Vertex closestVertex = null;
+        for(Vertex v2: vertices) {
+            distance = distance(v1, v2);
+            if((distance(v1, v2) > minDistance) && (distance < shortestDistance) && (v1.getNeighbors().contains(v2) == false)) {
+                shortestDistance = distance;
+                closestVertex = v2;
+            }
+        }
+
+        if(closestVertex != null) {
+            return closestVertex;
+        } else {
+            throw new NullPointerException();
         }
     }
 
@@ -120,8 +113,9 @@ public class Graph {
     private boolean intersects(Vertex v1, Vertex v2) {
         for(Vertex v3: vertices) {
             if(v1 != v3 && v2 != v3) {
-                for(Vertex v4: v3.getNeighbors()) {
-                    if(Line2D.linesIntersect(
+                for(Vertex v4: v3.neighbors) {
+                    if((v1 != v4 && v2 != v4) &&
+                            Line2D.linesIntersect(
                             v1.getX(), v1.getY(),
                             v2.getX(), v2.getY(),
                             v3.getX(), v3.getY(),
@@ -135,4 +129,3 @@ public class Graph {
         return false;
     }
 }
-

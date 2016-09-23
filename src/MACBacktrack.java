@@ -1,7 +1,6 @@
-package graphcoloring;
+package src;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /*
  * @author Ethan Peterson
@@ -137,7 +136,6 @@ public class MACBacktrack implements Solver
         }
     }
     
-    @Override
     public boolean isColored(Graph g)
     {
         for(Vertex v : g.getVertices())
@@ -149,7 +147,6 @@ public class MACBacktrack implements Solver
         return true;
     }
     
-    @Override
     public int getNumDecisions()
     {
         return numDecisions;

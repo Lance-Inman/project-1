@@ -1,7 +1,6 @@
-package graphcoloring;
+package src;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /*
  * @author Ethan Peterson
@@ -120,7 +119,6 @@ public class FCBacktrack implements Solver
         }
     }
     
-    @Override
     public boolean isColored(Graph g)
     {
         for(Vertex v : g.getVertices())

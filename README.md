@@ -1,4 +1,7 @@
 # project-1
+------------------
+FINISHED
+------------------
 <b>CSCI 446 — Artificial Intelligence<br>
 Project #1<br>
 Search, Constraint Satisfaction, and Graph Coloring</b><br>
